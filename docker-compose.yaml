@@ -1,0 +1,7 @@
+version: "3.9"
+services:
+  rstudio:
+    image: rstudio:latest
+    build: 
+      context: .
+      target: rstudio

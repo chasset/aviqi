@@ -1,0 +1,7 @@
+site,catalog,details,orders,delimiter,hasIds,isCents
+lane.com,RÉFÉRENTIEL PRODUITS,ORDER_ITEMS,TRANSACTION,C,F,T
+lyons-evans.com,products,détail commandes,commande,T,T,F
+ross-armstrong.com,products,détail commandes,commandes,T,F,F
+wiley-ruiz.com,CATALOGUE,DÉTAIL COMMANDES,COMMANDE,S,F,F
+fake1,CATALOGUE,DÉTAIL COMMANDES,COMMANDE,S,F,F
+fake2,CATALOGUE,DÉTAIL COMMANDES,COMMANDE,S,F,F

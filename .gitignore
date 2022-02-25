@@ -1,0 +1,13 @@
+.cache/
+.config/
+.local/
+.Rproj*/
+.vscode*/
+/R/
+.DS_Store
+.Rhistory
+*.Rproj
+.gitconfig
+.bash_history
+.Rproj.user
+package/man/hello.Rd
