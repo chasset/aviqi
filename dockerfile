@@ -101,6 +101,7 @@ RUN     apt-get update && apt-get install --no-install-recommends --assume-yes \
 COPY    install-packages.R .
 RUN     sudo Rscript install-packages.R CRAN languageserver
 RUN     sudo Rscript install-packages.R CRAN renv
+RUN     sudo Rscript install-packages.R CRAN dotenv
 
 ######################
 #-- Launch RStudio --#
