@@ -10,4 +10,8 @@
 .gitconfig
 .bash_history
 .Rproj.user
-package/man/hello.Rd
+*.Rcheck/
+*.tar.gz
+
+hello.R
+index.R
