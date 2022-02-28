@@ -1,6 +1,8 @@
 checkCatalog <- function(catalog, site) {
   # EAN are usually all defined
-  NAs <- catalog %>% dplyr::filter(is.na(ean)) %>% nrow() 
+  NAs <- catalog %>%
+    dplyr::filter(is.na(ean)) %>%
+    nrow()
   if (NAs > 0) {
     incErrorsPolicy(3)
     message("EAN are not all defined in catalog of site ", site)
@@ -8,7 +10,9 @@ checkCatalog <- function(catalog, site) {
 
   # EAN are always unique
   l <- catalog %>% nrow()
-  u <- catalog %>% dplyr::distinct(ean) %>% nrow()
+  u <- catalog %>%
+    dplyr::distinct(ean) %>%
+    nrow()
   if (l == u) {
     message("EAN in ", site, " catalog are unique")
   } else {
