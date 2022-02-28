@@ -37,7 +37,10 @@ selectColumns <- function(table) {
 getFinalTable <- function(orders, details, catalog, site) {
   firstDayOfMonth <- getOption("aviqi.firstDayOfMonth")
   orders %>%
-    dplyr::filter(lubridate::year(date) == lubridate::year(firstDayOfMonth), lubridate::month(date) == lubridate::month(firstDayOfMonth)) %>%
+    dplyr::filter(
+      lubridate::year(date) == lubridate::year(firstDayOfMonth), 
+      lubridate::month(date) == lubridate::month(firstDayOfMonth)
+    ) %>%
     dplyr::right_join(details, by = c("orderId")) %>%
     dplyr::group_by(ean) %>%
     dplyr::summarise(

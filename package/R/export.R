@@ -2,7 +2,7 @@
 #'
 #' Make the whole job of filtering, joining and aggregating data
 #' @export
-joinAndAggregate <- function() {
+monthReport <- function() {
   if (file.exists(".env")) {
     message("Version ", packageVersion("aviqi"), " loaded")
 

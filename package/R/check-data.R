@@ -1,9 +1,9 @@
 checkCatalog <- function(catalog, site) {
   # EAN are usually all defined
-  NAs <- catalog %>%
+  naS <- catalog %>%
     dplyr::filter(is.na(ean)) %>%
     nrow()
-  if (NAs > 0) {
+  if (naS > 0) {
     incErrorsPolicy(3)
     message("EAN are not all defined in catalog of site ", site)
   }
@@ -72,7 +72,7 @@ checkMissingSites <- function(files) {
   return(files)
 }
 
-checkOrders <- function(orders) {
+checkOrders <- function(orders, site) {
   #-- orders --#
   # ordersId are always defined
   # ordersId are always unique

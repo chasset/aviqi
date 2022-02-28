@@ -33,7 +33,7 @@ getSites <- function(files) {
 
 loadParameters <- function(filename) {
   # Load definition of sites
-  col_types <- readr::cols(
+  colTypes <- readr::cols(
     site = readr::col_character(),
     catalog = readr::col_character(),
     details = readr::col_character(),
@@ -44,7 +44,7 @@ loadParameters <- function(filename) {
   )
 
   # Load parameters
-  df <- readr::read_csv(filename, col_types = col_types)
+  df <- readr::read_csv(filename, col_types = colTypes)
   message(paste("Found", nrow(df), "sites"))
   return(df)
 }
