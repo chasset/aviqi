@@ -1,22 +1,32 @@
-#' @export
+#' Filter complete sites
+#'
+#' Get files description of complete sites.
+#' @param files Dataframe describing files to load
+#' @return Dataframe of files to load
 filterCompleteSites <- function(files) {
   sites <- files %>% getSites()
   files %>% dplyr::filter(site %in% sites$site)
 }
 
-#' @export
+#' Filter complete sites
+#'
+#' Get all files description and add a field showing
+#' if the file exists or not.
+#' @return Dataframe of files to load
 getFiles <- function() {
   dataFolder <- getOption("aviqi.dataFolder")
   getOption("aviqi.parametersFile") %>%
     loadParameters() %>%
-    tidyr::pivot_longer(cols = catalog:orders, names_to = "table") %>%
-    dplyr::mutate(
-      filename = paste0(dataFolder, "/", site, "_", value, ".csv", sep = "")
-    ) %>%
-    dplyr::rowwise() %>%
-    dplyr::mutate(exists = file.exists(filename))
+      tidyr::pivot_longer(cols = catalog:orders, names_to = "table") %>%
+      dplyr::mutate(
+        filename = paste0(dataFolder, "/", site, "_", value, ".csv", sep = "")
+      ) %>%
+      dplyr::rowwise() %>%
+      dplyr::mutate(exists = file.exists(filename))
 }
 
+#' Get missing sites
+#' @return Dataframe of missing sites
 getMissingSites <- function(files) {
   files %>%
     dplyr::group_by(site) %>%
@@ -24,6 +34,9 @@ getMissingSites <- function(files) {
     dplyr::filter(nbrOfFiles < 3)
 }
 
+#' Get complete sites
+#' @param files Dataframe describing files to load
+#' @return Dataframe of files from site that are fully defined
 getSites <- function(files) {
   files %>%
     dplyr::group_by(site) %>%
@@ -31,6 +44,9 @@ getSites <- function(files) {
     dplyr::filter(nbrOfFiles == 3)
 }
 
+#' Load parameters of sites
+#' @param filename Name of the file describing the files format
+#' @return Dataframe of sites
 loadParameters <- function(filename) {
   # Load definition of sites
   colTypes <- readr::cols(

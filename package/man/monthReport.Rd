@@ -2,10 +2,15 @@
 % Please edit documentation in R/export.R
 \name{monthReport}
 \alias{monthReport}
-\title{Get final table}
+\title{Get month}
 \usage{
 monthReport()
 }
+\value{
+Dataframe of the month report
+}
 \description{
-Make the whole job of filtering, joining and aggregating data
+Make the whole job of filtering, joining and aggregating data of all sites.
+Before execution, it loads the parameters describe in the .env file,
+checks the parameters and launch the whole process.
 }

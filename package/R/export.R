@@ -1,6 +1,9 @@
-#' Get final table
+#' Get month
 #'
-#' Make the whole job of filtering, joining and aggregating data
+#' Make the whole job of filtering, joining and aggregating data of all sites.
+#' Before execution, it loads the parameters describe in the .env file,
+#' checks the parameters and launch the whole process.
+#' @return Dataframe of the month report
 #' @export
 monthReport <- function() {
   if (file.exists(".env")) {
@@ -36,6 +39,7 @@ monthReport <- function() {
     printParameters()
     checkChosenPolicy()
 
+    # Whole process
     getFiles() %>%
       checkMissingSites() %>%
       filterCompleteSites() %>%
@@ -49,7 +53,11 @@ monthReport <- function() {
   }
 }
 
-#' Export dataframe to CSV
+#' Export month report
+#'
+#' Export dataframe to a CSV file
+#' @param df Dataframe to export
+#' @return Dataframe of the month report
 exportOutput <- function(df) {
   outputFilename <- getOption("aviqi.outputFilename")
   readr::write_delim(x = df, file = outputFilename, delim = ";")

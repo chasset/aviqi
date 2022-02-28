@@ -1,4 +1,6 @@
-#' @export
+#' Check policy choice
+#'
+#' Check if the choosen policy describes in .env file exists.
 checkChosenPolicy <- function() {
   policy <- getOption("aviqi.chosenPolicy")
   policies <- getOption("aviqi.policies")
@@ -10,29 +12,37 @@ checkChosenPolicy <- function() {
   return(NULL)
 }
 
-#' @export
+#' Check Data folder
+#'
+#' Check if the data folder exists.
 checkDataFolder <- function() {
   folder <- getOption("aviqi.dataFolder")
   if (!dir.exists(folder)) stop(paste("Data folder ", folder, " not found"))
   return(NULL)
 }
 
-#' @export
+#' Check Parameter file
+#'
+#' Check if the parameter file exists.
 checkParametersFile <- function() {
   filename <- getOption("aviqi.parametersFile")
   if (!file.exists(filename)) stop(paste("Parameters file ", filename, " doesn’t exist"))
   return(NULL)
 }
 
+#' Print loaded parameters
 printParameters <- function() {
   message(
-    "In ",
+    "In '",
     getOption("aviqi.parametersFile"),
-    ", parameters tell us that data are stored in ",
+    "', parameters tell us that data are stored in '",
     getOption("aviqi.dataFolder"),
-    " and they will be agregated and filtered to the month ",
-    getOption("aviqi.firstDayOfMonth"),
-    " and exported to ",
-    getOption("aviqi.outputFilename")
+    "' and they will be agregated and filtered to the month ",
+    getOption("aviqi.MONTH"),
+    " of the year ",
+    getOption("aviqi.YEAR"),
+    " and exported to '",
+    getOption("aviqi.outputFilename"),
+    "'"
   )
 }

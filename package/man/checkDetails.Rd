@@ -2,14 +2,16 @@
 % Please edit documentation in R/check-data.R
 \name{checkDetails}
 \alias{checkDetails}
-\title{Order details}
+\title{Check values in order details}
 \usage{
 checkDetails(details)
 }
+\arguments{
+\item{details}{A dataframe describing the order details}
+}
+\value{
+Dataframe of the order details
+}
 \description{
-orderId, EAN and quantity are always defined for each record
-Quantity are never under 1 or greater than 10
-Quantity are usually between 1 and 5
-Quantity are usually integer
-details
+Process multiple checks on the table.
 }

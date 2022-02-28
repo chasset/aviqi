@@ -2,10 +2,16 @@
 % Please edit documentation in R/export.R
 \name{exportOutput}
 \alias{exportOutput}
-\title{Export dataframe to CSV}
+\title{Export month report}
 \usage{
 exportOutput(df)
 }
+\arguments{
+\item{df}{Dataframe to export}
+}
+\value{
+Dataframe of the month report
+}
 \description{
-Export dataframe to CSV
+Export dataframe to a CSV file
 }

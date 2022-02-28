@@ -9,6 +9,9 @@ stopOrGo(df)
 \arguments{
 \item{df}{Dataframe received in the pipeline}
 }
+\value{
+Dataframe \code{df}
+}
 \description{
 Depending on the choosen policy and the number of errors found,
 it decides if it stops or continues the pipeline process.

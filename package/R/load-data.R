@@ -1,3 +1,9 @@
+#' Get column names
+#'
+#' Identify column names based on the table type.
+#' @param hasIds A boolean identifying a table with a column id
+#' @param table The table type
+#' @return Vector of column names
 getColumnNames <- function(hasIds, table) {
   names <- NULL
   if (table == "catalog") names <- c("price", "name", "ean")
@@ -7,6 +13,12 @@ getColumnNames <- function(hasIds, table) {
   return(names)
 }
 
+#' Get column types
+#'
+#' Identify column types based on the table type: c for character, i for integer…
+#' @param hasIds A boolean identifying a table with a column id
+#' @param table The table type
+#' @return Vector of column types
 getColumnTypes <- function(hasIds, table) {
   types <- NULL
   if (table == "catalog") types <- "dcc"
@@ -16,6 +28,11 @@ getColumnTypes <- function(hasIds, table) {
   return(types)
 }
 
+#' Get delimiter
+#'
+#' Identify delimiter used in the CSV file
+#' @param delim Delimiter code defined in parameters
+#' @return Character used to delimit fields in a file
 getDelimiter <- function(delim) {
   sep <- NULL
   if (delim == "C") {
@@ -30,10 +47,24 @@ getDelimiter <- function(delim) {
   return(sep)
 }
 
+#' Get column names (without id field)
+#'
+#' Identify column names based on the table type. Removed id fields if it exists.
+#' @param table The table type
+#' @return Vector of column names
 selectColumns <- function(table) {
-  getColumnNames(F, table)
+  getColumnNames(FALSE, table)
 }
 
+#' Merge tables of a site
+#'
+#' Take the 3 files of a site - catalog, orders and details - 
+#' and apply a filter, a join and an agregation.
+#' @param orders Dataframe describing orders
+#' @param details Dataframe describing order details
+#' @param catalog Dataframe describing products catalog
+#' @param site Source of the data (usually a website)
+#' @return Dataframe of the site
 getFinalTable <- function(orders, details, catalog, site) {
   firstDayOfMonth <- getOption("aviqi.firstDayOfMonth")
   orders %>%
@@ -61,6 +92,12 @@ getFinalTable <- function(orders, details, catalog, site) {
     )
 }
 
+#' Load CSV file
+#'
+#' The output has the right column names, types and units.
+#' @param files Dataframe describing files to load
+#' @param site Source of the data (usually a website)
+#' @return Dataframe of the file content
 loadTable <- function(files, site, table) {
   filter <- files$site == site & files$table == table
   delim <- getDelimiter(files$delimiter[filter])
@@ -78,12 +115,19 @@ loadTable <- function(files, site, table) {
     col_types = types,
     skip = 1
   )
+  # Correct prices described in cents
   if (isCents && table == "catalog") {
     df <- df %>% dplyr::mutate(price = price / 100)
   }
   return(df)
 }
 
+#' Load a site
+#'
+#' Load the 3 files of a site: catalog, orders and details.
+#' @param files Dataframe describing files to load
+#' @param site Source of the data (usually a website)
+#' @return Dataframe of the site
 loadSite <- function(files, site) {
   message("Processing site ", site)
 
@@ -96,6 +140,11 @@ loadSite <- function(files, site) {
   getFinalTable(orders, details, catalog, site)
 }
 
+#' Load all sites
+#'
+#' Load all sites described in parameters.
+#' @param files Dataframe describing files to load
+#' @return Dataframe of all sites
 #' @export
 loadSites <- function(files) {
   sites <- unique(files$site)

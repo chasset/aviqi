@@ -2,10 +2,14 @@
 % Please edit documentation in R/apply-policy.R
 \name{incErrorsPolicy}
 \alias{incErrorsPolicy}
-\title{Increment policy errors found}
+\title{Increment errors found by policy}
 \usage{
 incErrorsPolicy(policy)
 }
+\arguments{
+\item{policy}{The id of the policy to increment}
+}
 \description{
-Increment policy errors found
+When an error is found, this function increments the
+number of errors for a defined policy
 }
