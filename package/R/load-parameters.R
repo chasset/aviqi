@@ -1,3 +1,5 @@
+library(readr)
+library(dplyr)
 
 loadParameters <- function(filename) {
   # Load definition of sites
@@ -13,47 +15,39 @@ loadParameters <- function(filename) {
 
   # Load parameters
   df <- read_csv(parametersFile, col_types = col_types)
-  message(paste('Found', nrow(df), "sites"))
-
-  return(df)
+  message(paste("Found", nrow(df), "sites"))
+  df
 }
 
 # From a parameter file, get a dataframe with all files involved
-getFiles <- function(file) file %>%
-  loadParameters() %>%
-  pivot_longer(cols = catalog:orders, names_to = 'table') %>%
-  mutate(
-    filename = paste0(dataFolder, '/', site, '_', value, '.csv', sep = '')
-  ) %>%
-  rowwise() %>%
-  mutate(exists = file.exists(filename))
-
-checkIfOneSiteMissing <- function(missing) {
-  if (nrow(missing) > 0) {
-    message('Missing data for the following sites: ', paste(c(missing$site), collapse = ', '))
-    incErrorsPolicy(4)
-  }
+getFiles <- function(file) {
+  file %>%
+    loadParameters() %>%
+    pivot_longer(cols = catalog:orders, names_to = "table") %>%
+    mutate(
+      filename = paste0(dataFolder, "/", site, "_", value, ".csv", sep = "")
+    ) %>%
+    rowwise() %>%
+    mutate(exists = file.exists(filename))
 }
 
-getMissingSites <- function(files) files %>%
-  group_by(site) %>%
-  summarise(nbrOfFiles = sum(exists)) %>%
-  filter(nbrOfFiles < 3)
-
-checkMissingSites <- function(files) {
-  files %>% getMissingSites() %>% checkIfOneSiteMissing()
-  return(files)
+getMissingSites <- function(files) {
+  files %>%
+    group_by(site) %>%
+    summarise(nbrOfFiles = sum(exists)) %>%
+    filter(nbrOfFiles < 3)
 }
 
-getSites <- function(files) files %>%
-  group_by(site) %>%
-  summarise(nbrOfFiles = sum(exists)) %>%
-  filter(nbrOfFiles == 3)
+getSites <- function(files) {
+  files %>%
+    group_by(site) %>%
+    summarise(nbrOfFiles = sum(exists)) %>%
+    filter(nbrOfFiles == 3)
+}
 
 filterCompleteSites <- function(files) {
   sites <- files %>% getSites()
-  completed <- files %>% filter(site %in% sites$site)
-  return(completed)
+  files %>% filter(site %in% sites$site)
 }
 
 loadSites <- function(files) {
@@ -67,5 +61,5 @@ loadSites <- function(files) {
       all <- all %>% bind_rows(current)
     }
   }
-  return(all)
+  all
 }
