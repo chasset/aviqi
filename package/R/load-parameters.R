@@ -6,9 +6,10 @@ filterCompleteSites <- function(files) {
 
 #' @export
 getFiles <- function() {
-  parametersFile %>%
+  dataFolder <- getOption("aviqi.dataFolder")
+  getOption("aviqi.parametersFile") %>%
     loadParameters() %>%
-    dplyr::pivot_longer(cols = catalog:orders, names_to = "table") %>%
+    tidyr::pivot_longer(cols = catalog:orders, names_to = "table") %>%
     dplyr::mutate(
       filename = paste0(dataFolder, "/", site, "_", value, ".csv", sep = "")
     ) %>%
@@ -32,33 +33,18 @@ getSites <- function(files) {
 
 loadParameters <- function(filename) {
   # Load definition of sites
-  col_types <- cols(
-    site = col_character(),
-    catalog = col_character(),
-    details = col_character(),
-    orders = col_character(),
-    delimiter = col_character(),
-    hasIds = col_logical(),
-    isCents = col_logical()
+  col_types <- readr::cols(
+    site = readr::col_character(),
+    catalog = readr::col_character(),
+    details = readr::col_character(),
+    orders = readr::col_character(),
+    delimiter = readr::col_character(),
+    hasIds = readr::col_logical(),
+    isCents = readr::col_logical()
   )
 
   # Load parameters
-  df <- readr::read_csv(parametersFile, col_types = col_types)
+  df <- readr::read_csv(filename, col_types = col_types)
   message(paste("Found", nrow(df), "sites"))
-  df
-}
-
-#' @export
-loadSites <- function(files) {
-  sites <- dplyr::unique(files$site)
-  all <- NULL
-  for (site in fullSites$site) {
-    if (is.null(all)) {
-      all <- loadSite(site)
-    } else {
-      current <- loadSite(site)
-      all <- all %>% dplyr::bind_rows(current)
-    }
-  }
-  all
+  return(df)
 }

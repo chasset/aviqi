@@ -1,47 +1,52 @@
 checkCatalog <- function(catalog, site) {
   # EAN are usually all defined
-  check <- catalog %>%
-    dplyr::filter(is.na(ean)) %>%
-    dplyr::nrow()
-  if (check > 0) {
-    if (policy > 2) {
-      stop("")
-    }
+  NAs <- catalog %>% dplyr::filter(is.na(ean)) %>% nrow() 
+  if (NAs > 0) {
+    incErrorsPolicy(3)
+    message("EAN are not all defined in catalog of site ", site)
   }
+
   # EAN are always unique
-  if (check == catalog %>%
-    dplyr::distinct(ean) %>%
-    dplyr::nrow()) {
+  l <- catalog %>% nrow()
+  u <- catalog %>% dplyr::distinct(ean) %>% nrow()
+  if (l == u) {
     message("EAN in ", site, " catalog are unique")
   } else {
-    stop("Multiple definition of EAN in ", site, " catalog")
+    incErrorsPolicy(3)
+    message("Multiple definition of EAN in ", site, " catalog")
   }
+
+  # Usually, prices are more than 0€ and less than 300€
+  highPriceWarn <- catalog %>%
+    dplyr::filter(price > 300, price < 1000) %>%
+    nrow()
+  if (highPriceWarn > 0) {
+    incErrorsPolicy(3)
+    message("In ", site, " catalog, ", highPriceWarn, " prices are between 300 and 1000€")
+  }
+
   # All EAN has always a price
   # Prices are never negative, nor greater than 1000€
   neverPriceWarn <- catalog %>%
     dplyr::filter(price < 0 | price > 1000) %>%
-    dplyr::nrow()
+    nrow()
   if (neverPriceWarn > 0) {
-    stop("In ", site, " catalog, ", neverPriceWarn, " prices are below 0€ or greater than 1000€")
+    incErrorsPolicy(3)
+    message("In ", site, " catalog, ", neverPriceWarn, " prices are below 0€ or greater than 1000€")
   }
-  # Usually, prices are more than 0€ and less than 300€
-  highPriceWarn <- catalog %>%
-    dplyr::filter(price > 300, price < 1000) %>%
-    dplyr::nrow()
-  if (highPriceWarn > 0) {
-    warning("In ", site, " catalog, ", highPriceWarn, " prices are between 300 and 1000€")
-  }
-  catalog
+
+  return(catalog)
 }
 
 #' Order details
+#'
 #' orderId, EAN and quantity are always defined for each record
 #' Quantity are never under 1 or greater than 10
 #' Quantity are usually between 1 and 5
 #' Quantity are usually integer
 #' details
 checkDetails <- function(details) {
-  details
+  return(details)
 }
 
 checkIfOneSiteMissing <- function(missing) {
@@ -52,7 +57,7 @@ checkIfOneSiteMissing <- function(missing) {
     )
     incErrorsPolicy(4)
   }
-  missing
+  return(NULL)
 }
 
 #' @export
@@ -60,6 +65,7 @@ checkMissingSites <- function(files) {
   files %>%
     getMissingSites() %>%
     checkIfOneSiteMissing()
+  return(files)
 }
 
 checkOrders <- function(orders) {
@@ -67,12 +73,12 @@ checkOrders <- function(orders) {
   # ordersId are always defined
   # ordersId are always unique
   if (orders %>% nrow() != orders %>%
-    distinct(orderId) %>%
+    dplyr::distinct(orderId) %>%
     nrow()) {
     stop("Multiple definition of orders in ", site, " orders")
   }
   # orders has always a date
   # date are never less than 2000, nor greater than today
   # date are usually from one year before until today
-  orders
+  return(orders)
 }

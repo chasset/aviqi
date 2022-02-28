@@ -2,17 +2,11 @@
 % Please edit documentation in R/check-data.R
 \name{checkDetails}
 \alias{checkDetails}
-\title{Order details
-orderId, EAN and quantity are always defined for each record
-Quantity are never under 1 or greater than 10
-Quantity are usually between 1 and 5
-Quantity are usually integer
-details}
+\title{Order details}
 \usage{
 checkDetails(details)
 }
 \description{
-Order details
 orderId, EAN and quantity are always defined for each record
 Quantity are never under 1 or greater than 10
 Quantity are usually between 1 and 5

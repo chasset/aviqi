@@ -4,7 +4,7 @@ getColumnNames <- function(hasIds, table) {
   if (table == "orders") names <- c("orderId", "date")
   if (table == "details") names <- c("orderId", "quantity", "ean")
   if (hasIds) names <- c("id", names)
-  names
+  return(names)
 }
 
 getColumnTypes <- function(hasIds, table) {
@@ -13,7 +13,7 @@ getColumnTypes <- function(hasIds, table) {
   if (table == "orders") types <- "cD"
   if (table == "details") types <- "cdc"
   if (hasIds) types <- paste("i", types, sep = "")
-  types
+  return(types)
 }
 
 getDelimiter <- function(delim) {
@@ -27,12 +27,17 @@ getDelimiter <- function(delim) {
   if (delim == "T") {
     sep <- "\t"
   }
-  sep
+  return(sep)
 }
 
-getFinalTable <- function(orders, details, catalog) {
+selectColumns <- function(table) {
+  getColumnNames(F, table)
+}
+
+getFinalTable <- function(orders, details, catalog, site) {
+  firstDayOfMonth <- getOption("aviqi.firstDayOfMonth")
   orders %>%
-    dplyr::filter(year(date) == year(firstDayOfMonth), month(date) == month(firstDayOfMonth)) %>%
+    dplyr::filter(lubridate::year(date) == lubridate::year(firstDayOfMonth), lubridate::month(date) == lubridate::month(firstDayOfMonth)) %>%
     dplyr::right_join(details, by = c("orderId")) %>%
     dplyr::group_by(ean) %>%
     dplyr::summarise(
@@ -53,24 +58,12 @@ getFinalTable <- function(orders, details, catalog) {
     )
 }
 
-loadSite <- function(site) {
-  message("Processing site ", site)
-
-  # Load all tables of the site
-  catalog <- loadTable(site, "catalog") %>% checkCatalog()
-  details <- loadTable(site, "details") %>% checkDetails()
-  orders <- loadTable(site, "orders") %>% checkOrders()
-
-  # Build result table
-  getFinalTable(orders, details, catalog)
-}
-
-loadTable <- function(site, table) {
-  filter <- data$site == site & data$table == table
-  delim <- getDelimiter(data$delimiter[filter])
-  hasIds <- data$hasIds[filter]
-  isCents <- data$isCents[filter]
-  filename <- data$filename[filter]
+loadTable <- function(files, site, table) {
+  filter <- files$site == site & files$table == table
+  delim <- getDelimiter(files$delimiter[filter])
+  hasIds <- files$hasIds[filter]
+  isCents <- files$isCents[filter]
+  filename <- files$filename[filter]
   columns <- getColumnNames(hasIds, table)
   select <- selectColumns(table)
   types <- getColumnTypes(hasIds, table)
@@ -85,9 +78,32 @@ loadTable <- function(site, table) {
   if (isCents && table == "catalog") {
     df <- df %>% dplyr::mutate(price = price / 100)
   }
-  df
+  return(df)
 }
 
-selectColumns <- function(table) {
-  getColumnNames(F, table)
+loadSite <- function(files, site) {
+  message("Processing site ", site)
+
+  # Load all tables of the site
+  catalog <- loadTable(files, site, "catalog") %>% checkCatalog(site)
+  details <- loadTable(files, site, "details") %>% checkDetails()
+  orders <- loadTable(files, site, "orders") %>% checkOrders()
+
+  # Build result table
+  getFinalTable(orders, details, catalog, site)
+}
+
+#' @export
+loadSites <- function(files) {
+  sites <- unique(files$site)
+  all <- NULL
+  for (site in sites) {
+    if (is.null(all)) {
+      all <- loadSite(files, site)
+    } else {
+      current <- loadSite(files, site)
+      all <- all %>% dplyr::bind_rows(current)
+    }
+  }
+  return(all)
 }

@@ -1,9 +1,14 @@
 .onLoad <- function(libname, pkgname) {
   if (file.exists(".env")) {
+    message("Version ", packageVersion("aviqi"), " loaded")
+
+    # Loading parameters from env file
     dotenv::load_dot_env()
+
+    # Setting options with them
     op <- options()
     opAviqi <- list(
-      aviqi.firstDayOfMonth = as_date(Sys.getenv("FIRSTDAYOFMONTH")),
+      aviqi.firstDayOfMonth = lubridate::as_date(Sys.getenv("FIRSTDAYOFMONTH")),
       aviqi.chosenPolicy = as.numeric(Sys.getenv("CHOSENPOLICY")),
       aviqi.outputFilename = Sys.getenv("OUTPUTFILENAME"),
       aviqi.dataFolder = Sys.getenv("DATAFOLDER"),
@@ -20,7 +25,11 @@
     )
     toset <- !(names(opAviqi) %in% names(op))
     if (any(toset)) options(opAviqi[toset])
-  } else {
-    stop("No .env file found. Please reload the library in the right folder")
+
+    # Some checks about parameters
+    checkParametersFile()
+    checkDataFolder()
+    printParameters()
+    checkChosenPolicy()
   }
 }

@@ -4,7 +4,7 @@
 \alias{incErrorsPolicy}
 \title{Increment policy errors found}
 \usage{
-incErrorsPolicy()
+incErrorsPolicy(policy)
 }
 \description{
 Increment policy errors found
