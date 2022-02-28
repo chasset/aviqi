@@ -4,8 +4,8 @@ Title: Monthly sales report
 Version: 0.1.0
 Author: Pierre-Olivier Chasset
 Maintainer: Pierre-Olivier Chasset <yourself@somewhere.net>
-Description: From multiple websites sales report, build an agregated one.
-License: MIT
+Description: From multiple websites sales report, build an agregated file.
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports:
