@@ -1,6 +1,7 @@
 #' @export
 checkChosenPolicy <- function() {
   policy <- getOption("aviqi.chosenPolicy")
+  policies <- getOption("aviqi.policies")
   if (policy > 0 && policy <= nrow(policies)) {
     message("Chosen policy: ", policies$policy[policy])
   } else {
@@ -9,7 +10,7 @@ checkChosenPolicy <- function() {
 }
 
 #' @export
-checkDataFolder <- function()) {
+checkDataFolder <- function() {
   folder <- getOption("aviqi.dataFolder")
   if (!dir.exists(folder)) stop(paste("Data folder ", folder, " not found"))
 }

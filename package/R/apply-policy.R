@@ -7,10 +7,10 @@ incErrorsPolicy <- function() {
 }
 
 #' Stop or Go
-#' 
+#'
 #' Depending on the choosen policy and the number of errors found,
 #' it decides if it stops or continues the process
-#' 
+#'
 #' @export
 stopOrGo <- function(df) {
   policy <- getOption("aviqi.chosenPolicy")

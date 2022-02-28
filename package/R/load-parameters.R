@@ -1,33 +1,33 @@
 #' @export
 filterCompleteSites <- function(files) {
   sites <- files %>% getSites()
-  files %>% filter(site %in% sites$site)
+  files %>% dplyr::filter(site %in% sites$site)
 }
 
 #' @export
 getFiles <- function() {
   parametersFile %>%
     loadParameters() %>%
-    pivot_longer(cols = catalog:orders, names_to = "table") %>%
-    mutate(
+    dplyr::pivot_longer(cols = catalog:orders, names_to = "table") %>%
+    dplyr::mutate(
       filename = paste0(dataFolder, "/", site, "_", value, ".csv", sep = "")
     ) %>%
-    rowwise() %>%
-    mutate(exists = file.exists(filename))
+    dplyr::rowwise() %>%
+    dplyr::mutate(exists = file.exists(filename))
 }
 
 getMissingSites <- function(files) {
   files %>%
-    group_by(site) %>%
-    summarise(nbrOfFiles = sum(exists)) %>%
-    filter(nbrOfFiles < 3)
+    dplyr::group_by(site) %>%
+    dplyr::summarise(nbrOfFiles = sum(exists)) %>%
+    dplyr::filter(nbrOfFiles < 3)
 }
 
 getSites <- function(files) {
   files %>%
-    group_by(site) %>%
-    summarise(nbrOfFiles = sum(exists)) %>%
-    filter(nbrOfFiles == 3)
+    dplyr::group_by(site) %>%
+    dplyr::summarise(nbrOfFiles = sum(exists)) %>%
+    dplyr::filter(nbrOfFiles == 3)
 }
 
 loadParameters <- function(filename) {
@@ -43,21 +43,21 @@ loadParameters <- function(filename) {
   )
 
   # Load parameters
-  df <- read_csv(parametersFile, col_types = col_types)
+  df <- readr::read_csv(parametersFile, col_types = col_types)
   message(paste("Found", nrow(df), "sites"))
   df
 }
 
 #' @export
 loadSites <- function(files) {
-  sites <- unique(files$site)
+  sites <- dplyr::unique(files$site)
   all <- NULL
   for (site in fullSites$site) {
     if (is.null(all)) {
       all <- loadSite(site)
     } else {
       current <- loadSite(site)
-      all <- all %>% bind_rows(current)
+      all <- all %>% dplyr::bind_rows(current)
     }
   }
   all

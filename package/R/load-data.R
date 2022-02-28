@@ -32,18 +32,25 @@ getDelimiter <- function(delim) {
 
 getFinalTable <- function(orders, details, catalog) {
   orders %>%
-    filter(year(date) == year(firstDayOfMonth), month(date) == month(firstDayOfMonth)) %>%
-    right_join(details, by = c("orderId")) %>%
-    group_by(ean) %>%
-    summarise(
+    dplyr::filter(year(date) == year(firstDayOfMonth), month(date) == month(firstDayOfMonth)) %>%
+    dplyr::right_join(details, by = c("orderId")) %>%
+    dplyr::group_by(ean) %>%
+    dplyr::summarise(
       quantity = sum(quantity)
     ) %>%
-    left_join(catalog, by = c("ean")) %>%
-    mutate(
+    dplyr::left_join(catalog, by = c("ean")) %>%
+    dplyr::mutate(
       amount = quantity * price,
       site = site
     ) %>%
-    select(site, ean, name, quantity, price, amount)
+    dplyr::select(
+      site,
+      ean,
+      name,
+      quantity,
+      price,
+      amount
+    )
 }
 
 loadSite <- function(site) {
@@ -67,7 +74,7 @@ loadTable <- function(site, table) {
   columns <- getColumnNames(hasIds, table)
   select <- selectColumns(table)
   types <- getColumnTypes(hasIds, table)
-  df <- read_delim(
+  df <- readr::read_delim(
     file = filename,
     delim = delim,
     col_names = columns,
@@ -76,7 +83,7 @@ loadTable <- function(site, table) {
     skip = 1
   )
   if (isCents && table == "catalog") {
-    df <- df %>% mutate(price = price / 100)
+    df <- df %>% dplyr::mutate(price = price / 100)
   }
   df
 }
