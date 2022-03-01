@@ -13,7 +13,7 @@ incErrorsPolicy <- function(policy) {
 #' Stop or Go
 #'
 #' Depending on the choosen policy and the number of errors found,
-#' it decides if it stops or continues the pipeline process. 
+#' it decides if it stops or continues the pipeline process.
 #'
 #' @param df Dataframe received in the pipeline
 #' @return Dataframe \code{df}

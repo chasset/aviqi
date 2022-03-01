@@ -104,4 +104,3 @@ checkMissingSites <- function(files) {
     checkIfOneSiteMissing()
   return(files)
 }
-

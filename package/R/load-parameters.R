@@ -17,12 +17,12 @@ getFiles <- function() {
   dataFolder <- getOption("aviqi.dataFolder")
   getOption("aviqi.parametersFile") %>%
     loadParameters() %>%
-      tidyr::pivot_longer(cols = catalog:orders, names_to = "table") %>%
-      dplyr::mutate(
-        filename = paste0(dataFolder, "/", site, "_", value, ".csv", sep = "")
-      ) %>%
-      dplyr::rowwise() %>%
-      dplyr::mutate(exists = file.exists(filename))
+    tidyr::pivot_longer(cols = catalog:orders, names_to = "table") %>%
+    dplyr::mutate(
+      filename = paste0(dataFolder, "/", site, "_", value, ".csv", sep = "")
+    ) %>%
+    dplyr::rowwise() %>%
+    dplyr::mutate(exists = file.exists(filename))
 }
 
 #' Get missing sites
@@ -63,4 +63,43 @@ loadParameters <- function(filename) {
   df <- readr::read_csv(filename, col_types = colTypes)
   message(paste("Found", nrow(df), "sites"))
   return(df)
+}
+
+#' Load parameters of job
+#' @return Side effects on options()
+loadEnv <- function() {
+  # Loading parameters from env file
+  dotenv::load_dot_env()
+
+  # Setting options with them
+  op <- options()
+  opAviqi <- list(
+    aviqi.year = as.numeric(Sys.getenv("YEAR")),
+    aviqi.month = as.numeric(Sys.getenv("MONTH")),
+    aviqi.chosenPolicy = as.numeric(Sys.getenv("CHOSENPOLICY")),
+    aviqi.outputFilename = Sys.getenv("OUTPUTFILENAME"),
+    aviqi.dataFolder = Sys.getenv("DATAFOLDER"),
+    aviqi.parametersFile = Sys.getenv("SITES"),
+    aviqi.policies = data.frame(
+      policy = c(
+        "Skip all errors",
+        "Stop if unsual values are encountered",
+        "Stop if extreme values are encountered",
+        "Stop if one file is missing for a site"
+      ),
+      hitted = c(0, 0, 0, 0)
+    )
+  )
+  toset <- !(names(opAviqi) %in% names(op))
+  if (any(toset)) options(opAviqi[toset])
+
+  # Some checks about parameters
+  checkParametersFile()
+  checkDataFolder()
+  checkChosenPolicy()
+
+  # Print
+  printParameters()
+
+  return(NULL)
 }
