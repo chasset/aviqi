@@ -5,3 +5,8 @@ services:
     build: 
       context: .
       target: rstudio
+  r:
+    image: r:latest
+    build: 
+      context: .
+      target: r
