@@ -33,9 +33,7 @@ checkParametersFile <- function() {
 #' Print loaded parameters
 printParameters <- function() {
   message(
-    "In '",
-    getOption("aviqi.parametersFile"),
-    "', parameters tell us that data are stored in '",
+    "In '.env', parameters tell us that data are stored in '",
     getOption("aviqi.dataFolder"),
     "' and they will be agregated and filtered to the month ",
     getOption("aviqi.month"),
