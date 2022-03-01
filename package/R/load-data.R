@@ -67,11 +67,11 @@ selectColumns <- function(table) {
 #' @return Dataframe of the site
 getFinalTable <- function(orders, details, catalog, site) {
   orders %>%
+    dplyr::right_join(details, by = c("orderId")) %>%
     dplyr::filter(
       lubridate::year(date) == getOption("aviqi.year"),
       lubridate::month(date) == getOption("aviqi.month")
     ) %>%
-    dplyr::right_join(details, by = c("orderId")) %>%
     dplyr::group_by(ean) %>%
     dplyr::summarise(
       quantity = sum(quantity)
