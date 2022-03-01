@@ -38,9 +38,9 @@ printParameters <- function() {
     "', parameters tell us that data are stored in '",
     getOption("aviqi.dataFolder"),
     "' and they will be agregated and filtered to the month ",
-    getOption("aviqi.MONTH"),
+    getOption("aviqi.month"),
     " of the year ",
-    getOption("aviqi.YEAR"),
+    getOption("aviqi.year"),
     " and exported to '",
     getOption("aviqi.outputFilename"),
     "'"

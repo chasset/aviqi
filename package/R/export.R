@@ -3,54 +3,31 @@
 #' Make the whole job of filtering, joining and aggregating data of all sites.
 #' Before execution, it loads the parameters describe in the .env file,
 #' checks the parameters and launch the whole process.
-#' @return Dataframe of the month report
+#' @return Dataframe of the month report and an output file
 #' @export
 monthReport <- function() {
   if (file.exists(".env")) {
     message("Version ", packageVersion("aviqi"), " loaded")
-
-    # Loading parameters from env file
-    dotenv::load_dot_env()
-
-    # Setting options with them
-    op <- options()
-    opAviqi <- list(
-      aviqi.firstDayOfMonth = lubridate::as_date(Sys.getenv("FIRSTDAYOFMONTH")),
-      aviqi.chosenPolicy = as.numeric(Sys.getenv("CHOSENPOLICY")),
-      aviqi.outputFilename = Sys.getenv("OUTPUTFILENAME"),
-      aviqi.dataFolder = Sys.getenv("DATAFOLDER"),
-      aviqi.parametersFile = Sys.getenv("SITES"),
-      aviqi.policies = data.frame(
-        policy = c(
-          "Skip all errors",
-          "Stop if unsual values are encountered",
-          "Stop if extreme values are encountered",
-          "Stop if one file is missing for a site"
-        ),
-        hitted = c(0, 0, 0, 0)
-      )
-    )
-    toset <- !(names(opAviqi) %in% names(op))
-    if (any(toset)) options(opAviqi[toset])
-
-    # Some checks about parameters
-    checkParametersFile()
-    checkDataFolder()
-    printParameters()
-    checkChosenPolicy()
-
-    # Whole process
-    getFiles() %>%
-      checkMissingSites() %>%
-      filterCompleteSites() %>%
-      dplyr::select(-exists, -value) %>%
-      stopOrGo() %>%
-      loadSites() %>%
-      stopOrGo() %>%
-      exportOutput()
+    loadEnv()
+    getReport()
   } else {
     message(".env file is missing")
   }
+}
+
+#' get monthly sales report
+#'
+#' Export dataframe to a CSV file
+#' @return Dataframe of the sales monthly report
+getReport <- function() {
+  getFiles() %>%
+    checkMissingSites() %>%
+    filterCompleteSites() %>%
+    dplyr::select(-exists, -value) %>%
+    stopOrGo() %>%
+    loadSites() %>%
+    stopOrGo() %>%
+    exportOutput()
 }
 
 #' Export month report

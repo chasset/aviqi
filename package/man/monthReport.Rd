@@ -7,7 +7,7 @@
 monthReport()
 }
 \value{
-Dataframe of the month report
+Dataframe of the month report and an output file
 }
 \description{
 Make the whole job of filtering, joining and aggregating data of all sites.

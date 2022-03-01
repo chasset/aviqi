@@ -58,7 +58,7 @@ selectColumns <- function(table) {
 
 #' Merge tables of a site
 #'
-#' Take the 3 files of a site - catalog, orders and details - 
+#' Take the 3 files of a site - catalog, orders and details -
 #' and apply a filter, a join and an agregation.
 #' @param orders Dataframe describing orders
 #' @param details Dataframe describing order details
@@ -66,11 +66,10 @@ selectColumns <- function(table) {
 #' @param site Source of the data (usually a website)
 #' @return Dataframe of the site
 getFinalTable <- function(orders, details, catalog, site) {
-  firstDayOfMonth <- getOption("aviqi.firstDayOfMonth")
   orders %>%
     dplyr::filter(
-      lubridate::year(date) == lubridate::year(firstDayOfMonth), 
-      lubridate::month(date) == lubridate::month(firstDayOfMonth)
+      lubridate::year(date) == getOption("aviqi.year"),
+      lubridate::month(date) == getOption("aviqi.month")
     ) %>%
     dplyr::right_join(details, by = c("orderId")) %>%
     dplyr::group_by(ean) %>%
@@ -145,7 +144,6 @@ loadSite <- function(files, site) {
 #' Load all sites described in parameters.
 #' @param files Dataframe describing files to load
 #' @return Dataframe of all sites
-#' @export
 loadSites <- function(files) {
   sites <- unique(files$site)
   all <- NULL
