@@ -90,8 +90,7 @@ loadEnv <- function() {
       hitted = c(0, 0, 0, 0)
     )
   )
-  toset <- !(names(opAviqi) %in% names(op))
-  if (any(toset)) options(opAviqi[toset])
+  options(opAviqi)
 
   # Some checks about parameters
   checkParametersFile()
