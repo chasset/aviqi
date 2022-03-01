@@ -1,7 +1,7 @@
 Package: aviqi
 Type: Package
 Title: Monthly sales report
-Version: 1.0.9
+Version: 1.0.10
 Author: Pierre-Olivier Chasset
 Maintainer: Pierre-Olivier Chasset <yourself@somewhere.net>
 Description: From multiple websites sales report, build an agregated file.
