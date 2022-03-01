@@ -1,4 +1,4 @@
-# Session IQ
+# Help
 
 ## Dependency and Reproducibility
 
@@ -15,16 +15,50 @@ docker compose build
 If you want to explore and test code, use the RStudio environment of the virtual machine:
 
 ```bash
-RSTUDIO_IMAGE=rstudio:latest
-docker run --rm --detach --volume=$PWD:/home/ubuntu --publish=8787:8787 $RSTUDIO_IMAGE && open http://localhost:8787
+bash rstudio.sh
 ```
 
 It will open your favorite browser and ask you for username (ubuntu) and password (ubuntu).
 
 ## Export the final file
 
+In order to get the final report, you must define your job in an `.env` file and how to load data tables in a `sites-definition.csv` file. After that, just execute:
+
 ```bash
-RSTUDIO_IMAGE=rstudio:latest
-docker run --rm --detach --volume=$PWD:/home/ubuntu --publish=8787:8787 $RSTUDIO_IMAGE 
+bash month-report.sh
 ```
 
+### .env
+
+```bash
+# Target month
+YEAR=2021
+MONTH=1
+
+# Output file
+OUTPUTFILENAME="result.csv"
+
+# Skip or stop policies
+# 1 'Skip all errors',
+# 2 'Stop if unsual values are encountered',
+# 3 'Stop if extreme values are encountered',
+# 4 'Stop if one file is missing for a site'
+CHOSENPOLICY=1
+
+# Where are all files?
+DATAFOLDER="data"
+
+# Sites definition with files parameters
+SITES="sites-definition.csv"
+```
+
+### sites-definition.csv
+
+site | catalog | details | orders | delimiter | hasIds | isCents
+-----|---------|---------|--------|-----------|--------|---------
+lane.com | RÉFÉRENTIEL PRODUITS | ORDER_ITEMS | TRANSACTION | C | F | T
+lyons-evans.com | products | détail commandes | commande | T | T | F 
+ross-armstrong.com | products | détail commandes | commandes | T | F | F
+wiley-ruiz.com | CATALOGUE | DÉTAIL COMMANDES | COMMANDE | S | F | F
+fake1.com | CATALOGUE | DÉTAIL COMMANDES | COMMANDE | S | F | F
+fake2.com | CATALOGUE | DÉTAIL COMMANDES | COMMANDE | S | F | F
