@@ -12,7 +12,4 @@
 .Rproj.user
 *.Rcheck/
 *.tar.gz
-
-hello.R
-index.R
 result.csv
